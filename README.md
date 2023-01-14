@@ -34,6 +34,6 @@ cargo build --tests
 
 deploy(digital ocean) : 
 brew install doctl
-create read and write token (dop_v1_6862d8dae5aa83704f98d9f07d9cb89b232e4c96971f4283af389ac0a6d6cdc9)
+create read and write token
 doctl auth init
 doctl apps create --spec spec.yaml
