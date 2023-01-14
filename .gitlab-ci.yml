@@ -1,0 +1,50 @@
+image: "rust:1.65.0"
+
+default:
+  before_script:
+    - rustc --version 
+    - cargo --version
+
+variables:
+  POSTGRES_DB: $POSTGRES_DB
+  POSTGRES_USER: $POSTGRES_USER
+  POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+  POSTGRES_HOST_AUTH_METHOD: trust
+
+stages:
+  - test
+
+test-code:
+  stage: test
+  services:
+    - postgres:12.2-alpine
+  script:
+    - cargo install --version=0.5.7 sqlx-cli --no-default-features --features postgres
+    - SKIP_DOCKER=true ./scripts/init_db_ci.sh
+    - cargo test
+    - cargo install cargo-tarpaulin
+    - cargo tarpaulin --ignore-tests
+
+lint-code:
+  stage: test
+  services:
+    - postgres:12.2-alpine
+  script:
+    - rustup component add clippy
+    - cargo clippy -- -D warnings
+    
+format-code:
+  stage: test
+  services:
+    - postgres:12.2-alpine
+  script:
+    - rustup component add rustfmt
+    - cargo fmt -- --check
+
+audit-code:
+  stage: test
+  services:
+    - postgres:12.2-alpine
+  script:
+    - cargo install cargo-audit
+    - cargo audit
