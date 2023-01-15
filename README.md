@@ -37,3 +37,13 @@ brew install doctl
 create read and write token
 doctl auth init
 doctl apps create --spec spec.yaml
+doctl apps update 45cf1166-4edc-4413-84f4-7c5760e50f54 --spec=spec.yaml
+
+migration : 
+ DATABASE_URL=postgresql://newsletter:AVNS_KeL49HoqGcCx12CAbGe@app-e4530f83-add2-44d5-8bd6-fe11cda22d9d-do-user-13324123-0.b.db.ondigitalocean.com:25060/newsletter sqlx migrate run
+
+
+step to update the database : 
+- update the database with a nullable field
+- update the api with a default value for the new field
+- update the new column with non null constraints and a default value
