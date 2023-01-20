@@ -47,3 +47,8 @@ step to update the database :
 - update the database with a nullable field
 - update the api with a default value for the new field
 - update the new column with non null constraints and a default value
+
+
+export RUST_LOG="sqlx=error,info"
+export TEST_LOG=enabled
+cargo t subscribe_fails_if_there_is_a_fatal_database_error | bunyan
