@@ -44,6 +44,7 @@ impl TestApp {
     pub async fn post_newsletters(&self, body: serde_json::Value) -> reqwest::Response {
         reqwest::Client::new()
             .post(&format!("{}/newsletters", &self.address))
+            .basic_auth(Uuid::new_v4().to_string(), Some(Uuid::new_v4().to_string()))
             .json(&body)
             .send()
             .await
@@ -80,6 +81,7 @@ pub async fn spawn_app() -> TestApp {
         .expect("Failed to build application.");
     let application_port = application.port();
     let address = format!("http://127.0.0.1:{}", application.port());
+    // spawn app in the background
     let _ = tokio::spawn(application.run_until_stopped());
     TestApp {
         address,
