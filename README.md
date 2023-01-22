@@ -14,13 +14,12 @@ rustflags = ["-C", "link-arg=-fuse-ld=/usr/local/bin/zld"]
 
 
 cargo install cargo-watch --> cargo watch -x check -x test -x run
-cargo install cargo-tarpaulin -f (code coverage, cargo tarpaulin --all-features --workspace --timeout 120 --out Xml)
+cargo install cargo-tarpaulin -f (code coverage, cargo tarpaulin --all-features --timeout 120 --output-dir test_reports --out Xml)
 rustup component add clippy (linter, cargo clippy -- -D warnings)
 rustup component add rustfmt (formatter, cargo fmt -- --check)
 cargo install cargo-audit (scanning security vulnerabilities, cargo audit)
 cargo deny, linter for dependencies
 cargo install cargo-edit (needed to do cargo add some_crates)
-
 cargo install cargo-expand (debug a macro like #[tokio::main])
 install nightly compiler : rustup toolchain install nightly --allow-downgrade
 cargo build --release --bin zero2prod 
@@ -29,13 +28,7 @@ cargo expand --test health_check
 cargo install --version=0.5.7 sqlx-cli --no-default-features --features postgres
 cargo install cargo-udeps (remove unused dependencies, cargo +nightly udeps)
 
-cargo +nightly udeps
 
-cargo clippy -- -D warnings
-cargo fmt -- --check
-cargo audit
-
-cargo +nightly expand
 
 migrate database : 
 ./scripts/init_db.sh
@@ -44,17 +37,16 @@ SKIP_DOCKER=true ./scripts/init_db.sh
 
 run certain tests : 
 TEST_LOG=true cargo test health_check_works
+build binary for running test : cargo build --tests
 
+run docker image : 
 cargo sqlx prepare -- --lib
 docker build --tag zero2prod .
 docker run -d --name rust-api -p 8000:8000 zero2prod
 
-
-cargo build --tests
-
 deploy(digital ocean) : 
 brew install doctl
-create read and write token
+create read and write token on the digital ocean website
 doctl auth init
 doctl apps create --spec spec.yaml
 doctl apps update 45cf1166-4edc-4413-84f4-7c5760e50f54 --spec=spec.yaml

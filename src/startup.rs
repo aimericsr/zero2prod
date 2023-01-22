@@ -65,6 +65,7 @@ impl Application {
 pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
     PgPoolOptions::new()
         .connect_timeout(std::time::Duration::from_secs(2))
+        // be aware that the application can lunch without be connected to the database
         .connect_lazy_with(configuration.with_db())
 }
 
@@ -87,6 +88,7 @@ pub fn run(
     let server = HttpServer::new(move || {
         App::new()
             // Middlewares are added using the `wrap` method on `App`
+            // this tracinglogger is used to capture log emitted by actix web
             .wrap(TracingLogger::default())
             .route("/health_check", web::get().to(health_check))
             .route("/subscriptions/confirm", web::get().to(confirm))

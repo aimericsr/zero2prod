@@ -16,6 +16,9 @@ use tracing_subscriber::{layer::SubscriberExt, EnvFilter, Registry};
 /// `Send` and `Sync` to make it possible to pass it to `init_subscriber`
 /// later on.
 
+// name is the name of the subscriber
+// env_filter is the level of log (INFO, TRACE ...)
+// sink is where the output is redirected
 pub fn get_subscriber<Sink>(
     name: String,
     env_filter: String,
@@ -44,5 +47,6 @@ where
 pub fn init_subscriber(subscriber: impl Subscriber + Send + Sync) {
     // Redirect all `log`'s events to our subscriber
     LogTracer::init().expect("Failed to set logger");
+    // Use this subscriber as the default for the entire program
     set_global_default(subscriber).expect("Failed to set subscriber");
 }
